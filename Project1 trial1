@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+// Schema:
+// Month Name, Diversion Rate-Total, Capture Rate-Paper, Capture Rate-MGP, Capture Rate-Total
+var dataBronx = [
+    [1,29.65098153,32.16592399,55.06062753,105.0423026],
+    [2,31.78725278,31.83412006,52.57786742,120.9427007],
+    [3,34.7425625,31.81306266,52.5014469,138.5603872],
+    [4,31.46395708,32.74873237,55.98899355,126.0292853],
+    [5,29.22816584,31.08636276,53.81115663,112.3954099],
+    [6,33.58426549,33.58575579,56.3429069,137.8987069],
+    [7,37.87759047,29.90137544,53.14455829,165.8134411],
+    [8,35.91542746,29.80976137,52.59845668,150.501474],
+    [9,32.42223506,32.02122671,56.09804376,131.282625],
+    [10,30.52070616,29.84563544,55.61425741,119.5790022],
+    [11,29.16726081,30.32084642,54.38697474,109.8464769],
+    [12,34.57482719,33.85641497,50.79762852,136.2349293],
+];
+
+var dataBrooklynN = [
+    [1,33.56068435,40.36911066,60.55555533,121.4042628],
+    [2,37.25294744,39.0565989,58.05360031,139.4438025],
+    [3,39.32143517,38.34838868,56.47956578,153.4310688],
+    [4,36.78681767,40.12256539,59.59943512,145.7800688],
+    [5,33.79035243,37.96860526,55.55495561,127.926295],
+    [6,38.14530481,41.16271239,57.10372027,154.916232],
+    [7,43.10098338,38.80562314,52.08485132,183.1465319],
+    [8,41.05820199,39.3489029,51.62006402,167.653118],
+    [9,37.66163256,41.16886482,58.66145519,152.8545053],
+    [10,35.66550812,38.91650687,59.21495839,140.0560556],
+    [11,34.67043147,40.55295162,58.78325263,131.1935165],
+    [12,40.12307154,41.3705184,57.76658932,156.2022882],
+];
+
+var dataManhattan = [
+    [1,41.41135906,40.23124189,63.26113705,127.223898],
+    [2,43.41008007,39.7747467,61.25720929,142.6640416],
+    [3,46.93184812,40.74408475,60.30449128,164.4858505],
+    [4,42.99857361,41.4660932,66.1317874,145.4366228],
+    [5,40.53777567,41.21667215,63.53380703,131.4176627],
+    [6,44.48351979,42.94354941,64.41096086,155.1566916],
+    [7,49.60491057,37.65054995,58.86504889,190.8741222],
+    [8,46.86104232,37.97405831,59.28646561,170.1728537],
+    [9,44.50487773,40.65116008,64.55902888,152.5644526],
+    [10,42.53241637,39.44054978,65.2039342,139.8732721],
+    [11,40.95119469,39.47144246,65.85986655,130.5386681],
+    [12,46.40316097,43.3202512,60.66579469,159.8758583],
+];
+
+var dataQueensE = [
+    [1,41.00540531,39.5421148,76.04587599,140.0583952],
+    [2,44.08083735,38.84688231,76.77698111,163.475497],
+    [3,43.41154697,36.5611887,67.24365163,165.367948],
+    [4,39.87405806,42.75150739,73.83086964,170.7402038],
+    [5,36.86731964,39.40077047,69.15829532,145.921239],
+    [6,41.07150958,41.4723507,72.95453924,175.7860527],
+    [7,46.16227105,37.18211803,64.44199761,202.5801816],
+    [8,43.61549903,36.10878597,64.48973481,182.4957202],
+    [9,39.40791761,35.89193578,74.18940622,157.0592704],
+    [10,38.33102855,35.16441692,73.10269986,145.1643828],
+    [11,40.00005077,37.28181297,69.99687696,145.1208843],
+    [12,45.24123439,38.79108655,66.46436487,170.5252839],
+];
+
+var dataQueensW = [
+    [1,41.46444732,41.26091858,76.27401478,142.8253609],
+    [2,43.82382059,40.64985224,74.28594481,162.3499738],
+    [3,45.69041283,39.34668341,71.66636076,177.2683525],
+    [4,41.70787463,41.79327543,74.96048348,163.3070876],
+    [5,38.426071,39.07003736,70.12997622,143.4519257],
+    [6,42.95464579,41.89380585,72.40960766,172.6991294],
+    [7,48.44008896,39.92964023,67.15662527,212.583723],
+    [8,45.91945091,38.8313731,68.25921607,192.0829735],
+    [9,42.06654477,39.00141152,82.52955939,172.4358419],
+    [10,40.30722863,38.02460468,82.30565478,160.575537],
+    [11,40.84886978,40.53611201,80.1291695,154.0033647],
+    [12,46.77286807,43.27291883,73.35077552,180.615078],
+];
+
+var dataStatenI = [
+    [1,42.91638917,42.94304415,78.94688718,144.2510144],
+    [2,44.31189317,41.3107277,74.42283109,161.5981118],
+    [3,47.03356666,41.57118961,69.33153085,181.2184833],
+    [4,42.72198586,52.68787948,83.42145188,200.0820344],
+    [5,38.86639329,47.28846746,78.75339602,171.2398762],
+    [6,43.94913233,50.69639661,85.75248725,210.1143365],
+    [7,50.6351261,43.4625018,80.20334434,236.48649],
+    [8,47.29380327,42.71309211,75.25248803,208.05715],
+    [9,44.00746823,41.24668049,83.3639113,179.7523088],
+    [10,42.48288328,41.32552441,82.22912506,168.1006307],
+    [11,43.26635622,41.74975058,77.06588849,156.0968473],
+    [12,48.86787154,45.37232349,72.21971107,188.5840172],
+];
+
+var schema = [
+    {name: 'date', index: 0, text: 'Month Name'},
+    {name: 'DRT', index: 1, text: 'Diversion Rate-Total'},
+    {name: 'CRP', index: 2, text: 'Capture Rate-Paper'},
+    {name: 'CRM', index: 3, text: 'Capture Rate-MGP'},
+    {name: 'CRT', index: 4, text: 'Capture Rate-Total'},
+];
+
+var lineStyle = {
+    normal: {
+        width: 1,
+        opacity: 0.5
+    }
+};
+
+option = {
+    backgroundColor: '#333',
+
+    title: {
+        textStyle: {
+            color: '#fff'
+        },
+        text: 'Recycling Diversion and Capture Rates(2018)',
+        subtext: "Data from 'NYC OpenData",
+        sublink: 'https://data.cityofnewyork.us/Environment/Recycling-Diversion-and-Capture-Rates/gaq9-z3hz',
+        left: 'right'
+        },
+
+    legend: {
+        bottom: 30,
+        data: ['Bronx', 'Brooklyn North', 'Manhattan','Queens East','Queens West','Staten Island'],
+        itemGap: 20,
+        textStyle: {
+            color: '#fff',
+            fontSize: 14
+        }
+    },
+    tooltip: {
+        padding: 10,
+        backgroundColor: '#222',
+        borderColor: '#777',
+        borderWidth: 1,
+        formatter: function (obj) {
+            var value = obj[0].value;
+            return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                + obj[0].seriesName + ' ' + value[0] + 'Month Name：'
+                + value[5]
+                + '</div>'
+                + schema[1].text + '：' + value[1] + '<br>'
+                + schema[2].text + '：' + value[2] + '<br>'
+                + schema[3].text + '：' + value[3] + '<br>'
+                + schema[4].text + '：' + value[4] + '<br>'
+        }
+    },
+
+    parallelAxis: [
+        {dim: 0, name: schema[0].text},
+        {dim: 1, name: schema[1].text},
+        {dim: 2, name: schema[2].text},
+        {dim: 3, name: schema[3].text},
+        {dim: 4, name: schema[4].text},
+    ],
+    visualMap: {
+        show: true,
+        min: 20,
+        max: 60,
+        dimension: 2,
+        inRange: {
+            color: ['#ff0000','#eac736','#00ffff'].reverse(),
+            // colorAlpha: [0, 1]
+        }
+    },
+    parallel: {
+        left: '5%',
+        right: '18%',
+        bottom: 100,
+        top: 100,
+        parallelAxisDefault: {
+            type: 'value',
+            name: 'Capture Rate-Paper',
+            nameLocation: 'end',
+            nameGap: 20,
+            nameTextStyle: {
+                color: '#fff',
+                fontSize: 12
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#aaa'
+                }
+            },
+            axisTick: {
+                lineStyle: {
+                    color: '#777'
+                }
+            },
+            splitLine: {
+                show: false
+            },
+            axisLabel: {
+                textStyle: {
+                    color: '#fff'
+                }
+            }
+        }
+    },
+    series: [
+        {
+            name: 'Bronx',
+            type: 'parallel',
+            lineStyle: lineStyle,
+            data: dataBronx
+        },
+        {
+            name: 'Brooklyn North',
+            type: 'parallel',
+            lineStyle: lineStyle,
+            data: dataBrooklynN
+        },
+        {
+            name: 'Manhattan',
+            type: 'parallel',
+            lineStyle: lineStyle,
+            data: dataManhattan
+        },
+        {
+            name: 'Queens East',
+            type: 'parallel',
+            lineStyle: lineStyle,
+            data: dataQueensE
+        },
+        {
+            name: 'Queens West',
+            type: 'parallel',
+            lineStyle: lineStyle,
+            data: dataQueensW
+        },
+        {
+            name: 'Staten Island',
+            type: 'parallel',
+            lineStyle: lineStyle,
+            data: dataStatenI
+        }
+    ]
+};;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>
