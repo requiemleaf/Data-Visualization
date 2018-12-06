@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+
+var time = ['10:08', '10:20', '10:30', '10:35', '10:40', '10:42', '10:44', '10:50', '10:53', '11:00','11:04','11:10','11:20',
+'11:36','11:38','11:40','11:43','11:48','11:49','12:00','12:01','12:02','12:07','12:20','12:36','12:42','12:55'];
+
+var category = ['Bags', 'People', 'Trolleys','Handcart'];
+
+var data = [
+//10:08
+['Bags','10:08',2],
+['People','10:08',1],
+['Trolleys','10:08',2],
+['Handcart','10:08',0],
+//10:20
+['Bags','10:20',2],
+['People','10:20',2],
+['Trolleys','10:20',2],
+['Handcart','10:20',0],
+//10:30
+['Bags','10:30',1],
+['People','10:30',1],
+['Trolleys','10:30',1],
+['Handcart','10:30',0],
+//10:35
+['Bags','10:35',2],
+['People','10:35',2],
+['Trolleys','10:35',2],
+['Handcart','10:35',0],
+//10:40
+['Bags','10:40',5.5],
+['People','10:40',1],
+['Trolleys','10:40',0],
+['Handcart','10:40',1],
+//10:42
+['Bags','10:42',1],
+['People','10:42',1],
+['Trolleys','10:42',1],
+['Handcart','10:42',0],
+//10:44
+['Bags','10:44',2],
+['People','10:44',1],
+['Trolleys','10:44',2],
+['Handcart','10:44',0],
+//10:50
+['Bags','10:50',7],
+['People','10:50',1],
+['Trolleys','10:50',0],
+['Handcart','10:50',1],
+//10:53
+['Bags','10:53',1],
+['People','10:53',1],
+['Trolleys','10:53',1],
+['Handcart','10:53',0],
+//11:00
+['Bags','11:00',2],
+['People','11:00',2],
+['Trolleys','11:00',2],
+['Handcart','11:00',0],
+//11:04
+['Bags','11:04',1],
+['People','11:04',1],
+['Trolleys','11:04',1],
+['Handcart','11:04',0],
+//11:10
+['Bags','11:10',1],
+['People','11:10',1],
+['Trolleys','11:10',1],
+['Handcart','11:10',0],
+//11:20
+['Bags','11:20',1],
+['People','11:20',1],
+['Trolleys','11:20',1],
+['Handcart','11:20',0],
+//11:36
+['Bags','11:36',1],
+['People','11:36',1],
+['Trolleys','11:36',1],
+['Handcart','11:36',0],
+//11:38
+['Bags','11:38',3],
+['People','11:38',2],
+['Trolleys','11:38',3],
+['Handcart','11:38',0],
+//11:40
+['Bags','11:40',8],
+['People','11:40',1],
+['Trolleys','11:40',3],
+['Handcart','11:40',1],
+//11:43
+['Bags','11:43',6],
+['People','11:43',1],
+['Trolleys','11:43',3],
+['Handcart','11:43',1],
+//11:48
+['Bags','11:48',2],
+['People','11:48',1],
+['Trolleys','11:48',2],
+['Handcart','11:48',2],
+//11:49
+['Bags','11:49',1],
+['People','11:49',1],
+['Trolleys','11:49',1],
+['Handcart','11:49',0],
+//12:00
+['Bags','12:00',2],
+['People','12:00',1],
+['Trolleys','12:00',2],
+['Handcart','12:00',0],
+//12:01
+['Bags','12:01',7.5],
+['People','12:01',1],
+['Trolleys','12:01',0],
+['Handcart','12:01',1],
+//12:02
+['Bags','12:02',2],
+['People','12:02',1],
+['Trolleys','12:02',1],
+['Handcart','12:02',0],
+//12:07
+['Bags','12:07',8.5],
+['People','12:07',1],
+['Trolleys','12:07',1],
+['Handcart','12:07',1],
+//12:20
+['Bags','12:20',1],
+['People','12:20',1],
+['Trolleys','12:20',1],
+['Handcart','12:20',0],
+//12:36
+['Bags','12:36',4],
+['People','12:36',1],
+['Trolleys','12:36',0],
+['Handcart','12:36',1],
+//12:42
+['Bags','12:42',1],
+['People','12:42',1],
+['Trolleys','12:42',0],
+['Handcart','12:42',1],
+//12:55
+['Bags','12:55',1.5],
+['People','12:55',1],
+['Trolleys','12:55',1],
+['Handcart','12:55',0],
+];
+
+option = {
+        title: {
+            text: 'Mealie Market',
+            //subtext: "Data from 'NYC OpenData",
+            //sublink: 'https://data.cityofnewyork.us/Environment/Recycling-Diversion-and-Capture-Rates/gaq9-z3hz',
+            left: 'right'
+        },
+
+    tooltip: {},
+    visualMap: {
+        min: 0,
+        max: 10,
+        inRange: {
+            color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027'
+            , '#a50026']
+        }
+    },
+    xAxis3D: {
+        type: 'category',
+        data: time
+    },
+    yAxis3D: {
+        type: 'category',
+        data: category
+    },
+    zAxis3D: {
+        type: 'value'
+    },
+    grid3D: {
+        boxWidth: 200,
+        boxDepth: 45,
+        viewControl: {
+            // projection: 'orthographic'
+        },
+        light: {
+            main: {
+                intensity: 1.2,
+                shadow: true
+            },
+            ambient: {
+                intensity: 0.3
+            }
+        }
+    },
+    series: [{
+        type: 'bar3D',
+        data: data.map(function (item) {
+            return {
+                value: [item[1], item[0], item[2]],
+            }
+        }),
+        shading: 'lambert',
+
+        label: {
+            textStyle: {
+                fontSize: 200,
+                borderWidth: 20
+            }
+        },
+
+        itemStyle: {
+            opacity: 1
+        },
+
+        emphasis: {
+            label: {
+                textStyle: {
+                    fontSize: 20,
+                    color: '#900'
+                }
+            },
+            itemStyle: {
+                color: '#900'
+            }
+        }
+    }]
+};
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>
